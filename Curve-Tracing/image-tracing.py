@@ -29,7 +29,7 @@ class Coordinates:
         # Four parameters: number, x coordinate, y coordinate, is shift pressed
         f = fits.open(self.path)
         # Color maps available at https://matplotlib.org/stable/tutorials/colors/colormaps.html
-        im = self.ax.imshow(f[0].data, cmap="hot", origin="lower")
+        im = self.ax.imshow(f[0].data, cmap="afmhot", origin="lower", vmin="0", vmax="700")
         # Events, such as mouse click, and button press/release.
         self.cidclick = self.fig.canvas.mpl_connect('button_press_event', self.onclick)
         self.cidpress = self.fig.canvas.mpl_connect('key_press_event', self.key_press)
