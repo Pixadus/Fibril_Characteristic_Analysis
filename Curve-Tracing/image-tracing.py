@@ -19,10 +19,11 @@ from collections import OrderedDict
 
 class Coordinates:
     ## Setup
-    def __init__(self,path):
-        self.path=path              # Image path
-        self.num = 0                # nth curve. Incremements whenever shift is released
-        self.coords=OrderedDict()   # We're storing our coordinates as {num: np.array([x1,y1],[x2,y2])}
+    def __init__(self,path,datafile=None):
+        self.path = path              # Image path
+        self.datafile = datafile          # Already-existing data to use. Optional.
+        self.num = 0                  # nth curve. Incremements whenever shift is released
+        self.coords=  OrderedDict()   # We're storing our coordinates as {num: np.array([x1,y1],[x2,y2])}
         self.coords[0] = np.array([]) # Initialize the 0th curve array
         self.shift = False          # Is the shift key currently pressed?
         self.fig, self.ax = plt.subplots(figsize=(15,15)) # 15 inch by 15 inches
@@ -34,6 +35,8 @@ class Coordinates:
         self.cidclick = self.fig.canvas.mpl_connect('button_press_event', self.onclick)
         self.cidpress = self.fig.canvas.mpl_connect('key_press_event', self.key_press)
         self.cidrelease = self.fig.canvas.mpl_connect('key_release_event', self.key_release)
+        if self.datafile:
+            self.plot_data()
         plt.show()
 
     ## Operation: whenever shift is held (either), and a click is detected, a point
@@ -63,8 +66,7 @@ class Coordinates:
             self.save_to_files()
     def key_release(self,event):
         if event.key == "shift":
-            if self.coords[self.num].size != 0:
-                self.num+=1
+            self.num+=1
             self.shift = False
             self.coords[self.num] = np.array([])
 
@@ -99,8 +101,34 @@ class Coordinates:
             print("Characteristics saved to characteristics.csv")
         except Exception as e:
             print("Error writing to characteristics.csv: {}".format(e))
+        self.coords[self.num] = np.array([])
+    
+    def plot_data(self):
+        # If we already have data stored in a CSV, we can supply it as an optional argument to be plotted.
+        with open(self.datafile, newline='') as datafile:
+            datareader = csv.reader(datafile, delimiter=',')
+            for row in datareader:
+                try:
+                    self.coords[int(row[0])]
+                except KeyError:
+                    self.coords[int(row[0])] = np.array([])
+                if np.size(self.coords[int(row[0])]) == 0:
+                    self.coords[int(row[0])] = np.array([[float(row[1]),float(row[2])]])
+                else:
+                    self.coords[int(row[0])] = np.append(self.coords[int(row[0])], [np.array([float(row[1]),float(row[2])])], axis=0)
+                self.num = int(row[0])
+                x = self.coords[self.num][:,0]
+                y = self.coords[self.num][:,1]
+                self.ax.scatter(x,y)
+                self.ax.plot(x,y)
+            self.fig.canvas.draw()
+            print(self.num)
+            self.num+=1
+            self.coords[self.num] = np.array([])
+
 
 if __name__ == "__main__":
     # If we're running this program directly from the command line
     fits_file = "TRACE_19980519.fits"
-    Coordinates(fits_file)
+    datafile = "coordinates.csv"
+    Coordinates(fits_file, datafile)
