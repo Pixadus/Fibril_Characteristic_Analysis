@@ -23,7 +23,7 @@ class Coordinates:
         self.path = path              # Image path
         self.datafile = datafile          # Already-existing data to use. Optional.
         self.num = 0                  # nth curve. Incremements whenever shift is released
-        self.coords=  OrderedDict()   # We're storing our coordinates as {num: np.array([x1,y1],[x2,y2])}
+        self.coords =  OrderedDict()   # We're storing our coordinates as {num: np.array([x1,y1],[x2,y2])}
         self.coords[0] = np.array([]) # Initialize the 0th curve array
         self.shift = False          # Is the shift key currently pressed?
         self.fig, self.ax = plt.subplots(figsize=(15,15)) # 15 inch by 15 inches
@@ -131,4 +131,4 @@ if __name__ == "__main__":
     # If we're running this program directly from the command line
     fits_file = "TRACE_19980519.fits"
     datafile = "coordinates.csv"
-    Coordinates(fits_file, datafile)
+    Coordinates(fits_file, datafile=None)
