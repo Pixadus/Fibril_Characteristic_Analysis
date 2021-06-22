@@ -58,7 +58,9 @@ class Coordinates:
             self.plot_data()
         else:
             self.datafile = "coordinates-{}.csv".format(datetime.now().strftime("%Y-%m-%d-%H:%m:%S"))
-        self.characterfile="characteristics-{}.csv".format(datetime.now().strftime("%Y-%m-%d-%H:%m:%S"))
+        # Our characterfile will just be dependent on the naming of our coordfile, so we don't have to repeat logic. 
+        self.characterfile="characteristics-{}.csv".format(self.datafile[self.datafile.find('-')+1:self.datafile.find('.')])
+        print(self.characterfile)
         plt.show()
 
     ## Operation: whenever shift is held (either), and a click is detected, a point
