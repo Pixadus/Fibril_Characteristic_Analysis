@@ -46,9 +46,9 @@ class Coordinates:
                     print("{}: {}".format(n,im_name))
                     n+=1
                 opt = input("> ")
-                self.ax.imshow(f[list(f.keys())[int(opt)]], cmap="afmhot", origin="lower", vmin="0", vmax="3")
+                self.ax.imshow(f[list(f.keys())[int(opt)]], cmap="ocean", origin="lower", vmin="0", vmax="2")
             else:
-                self.ax.imshow(f[list(f.keys())[0]], cmap="afmhot", origin="lower", vmin="0", vmax="3")
+                self.ax.imshow(f[list(f.keys())[0]], cmap="ocean", origin="lower", vmin="0", vmax="2")
         # Color maps available at https://matplotlib.org/stable/tutorials/colors/colormaps.html
         # Events, such as mouse click, and button press/release.
         self.cidclick = self.fig.canvas.mpl_connect('button_press_event', self.onclick)
@@ -109,7 +109,7 @@ class Coordinates:
             print("Error writing to {}: {}".format("data/"+self.datafile, e))
 
         try:
-            with open('data/characteristics.csv', 'w', newline='') as charfile:
+            with open('data/'+self.characterfile, 'w', newline='') as charfile:
                 charwriter = csv.writer(charfile)
                 charwriter.writerow(["Loop Number", "Length (px)"])
                 for key in self.coords.keys():
@@ -123,9 +123,9 @@ class Coordinates:
                             self.prevcoord = coord
                     print(key, length)
                     charwriter.writerow([key,length])
-            print("Characteristics saved to data/characteristics.csv")
+            print("Characteristics saved to data/"+self.characterfile)
         except Exception as e:
-            print("Error writing to characteristics.csv: {}".format(e))
+            print("Error writing to {}: {}".format(self.characterfile, e))
         self.coords[self.num] = np.array([])
     
     def plot_data(self):
