@@ -11,6 +11,7 @@ containing coordinate information for individual points, and characteristics.csv
 another curve. Hit the enter key to save your data to the files indicated above. 
 """
 # Reference: https://learn.astropy.org/FITS-images.html
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import csv
@@ -19,6 +20,8 @@ import scipy.io as sio
 from datetime import datetime
 from astropy.io import fits
 from collections import OrderedDict
+
+matplotlib.use("TkAgg")
 
 class Coordinates:
     ## Setup
@@ -46,9 +49,12 @@ class Coordinates:
                     print("{}: {}".format(n,im_name))
                     n+=1
                 opt = input("> ")
-                self.ax.imshow(f[list(f.keys())[int(opt)]], cmap="ocean", origin="lower", vmin="0", vmax="2")
+                ext = [x_off, f[list(f.keys())[int(opt)]].shape[0]+x_off, y_off, f[list(f.keys())[int(opt)]].shape[1]+y_off]
+                self.ax.imshow(f[list(f.keys())[int(opt)]], cmap="ocean", origin="lower", vmin="0.99", vmax="1.25", extent=ext)
             else:
-                self.ax.imshow(f[list(f.keys())[0]], cmap="ocean", origin="lower", vmin="0", vmax="2")
+                ext = [x_off, f[list(f.keys())[0]].shape[0]+x_off, y_off, f[list(f.keys())[0]].shape[1]+y_off]
+                self.ax.imshow(f[list(f.keys())[0]], cmap="ocean", origin="lower", vmin="0.99", vmax="1.25", extent=ext)
+                # NOTE: the vmin and vmax values above should be modified to provide max contrast to image. Open plot options in image to find this. 
         # Color maps available at https://matplotlib.org/stable/tutorials/colors/colormaps.html
         # Events, such as mouse click, and button press/release.
         self.cidclick = self.fig.canvas.mpl_connect('button_press_event', self.onclick)

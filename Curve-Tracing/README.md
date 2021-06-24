@@ -2,6 +2,14 @@
 
 This script is designed to manually trace features in solar images. Note that purpose is an arbitrary idea - the program is designed to trace lines, so you can really use it for anything. 
 
+## Prerequisites
+
+You need a few packages to get started. Install them with
+```
+python -m pip install numpy scipy astropy matplotlib
+```
+> **Note**: your Python version *must* be 3.5<. You can find this out with the console command `python --version`.  
+
 ## Running
 
 You may use either an IDL .sav file, or a .fits file for this script. The program is run with the following arguments:
