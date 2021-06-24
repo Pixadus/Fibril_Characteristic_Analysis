@@ -10,6 +10,8 @@ python -m pip install numpy scipy astropy matplotlib
 ```
 > **Note**: your Python version *must* be 3.5<. You can find this out with the console command `python --version`.  
 
+For Mac users, run the command `brew install python-tk` to install Python with tkinter support. 
+
 ## Running
 
 You may use either an IDL .sav file, or a .fits file for this script. The program is run with the following arguments:
@@ -50,9 +52,6 @@ The structure of **coordinates.csv** is described below:
 And so on. **characteristics.csv** has a header which describes it's internal content. 
 
 ## Mac Steps
-The `matplotlib` library is currently a little bugged on MacOSX Big Sur, and requires an additional few steps to run.
-1. Install Tkinter with `brew install python-tk`
-2. Import `tkinter` in the script by adding `import tkinter as tk` to the top of the `image-tracing.py` file
-3. Under all of the imports, add `matplotlib.use('TkAgg')`
+The `matplotlib` library is currently a little bugged on MacOSX Big Sur, so we have an additional file for it. Use `image-tracing-mac` if you're on OSX. 
 
 See [Issue #20486](https://github.com/matplotlib/matplotlib/issues/20486) for more details.
