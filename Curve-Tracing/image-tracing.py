@@ -36,7 +36,7 @@ class Coordinates:
         if ".fits" in path:
             f = fits.open(self.path, ignore_missing_end=True)
             ext = [x_off, f[0].data.shape[0]+x_off, y_off, f[0].data.shape[1]+y_off]
-            self.ax.imshow(f[0].data, cmap="afmhot", origin="lower", vmin="0", vmax="700", extent=ext)
+            self.ax.imshow(f[0].data, cmap="ocean", origin="lower", vmin="0", vmax="700", extent=ext)
         elif ".sav" in path:
             f = sio.readsav(self.path)
             if len(f) > 1:
