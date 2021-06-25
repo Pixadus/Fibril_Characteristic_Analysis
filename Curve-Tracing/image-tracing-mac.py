@@ -91,7 +91,7 @@ class Coordinates:
             y = self.coords[self.num][:,1]
             #self.scat.set_data(x,y)
             self.scat = self.ax.scatter(x,y, animated=True) # Create scatter function
-            (self.plot,) = self.ax.plot(x,y, animated=True, color="red") # Create cached plot function
+            (self.plot,) = self.ax.plot(x,y, animated=True) # Create cached plot function
 
             self.ax.draw_artist(self.scat) # Draw the updated scatter plot
             self.ax.draw_artist(self.plot) # Draw the updated line plot
