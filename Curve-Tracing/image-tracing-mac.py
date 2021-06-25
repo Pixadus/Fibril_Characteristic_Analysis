@@ -35,6 +35,7 @@ class Coordinates:
         self.coords[0] = np.array([]) # Initialize the 0th curve array
         self.shift = False          # Is the shift key currently pressed?
         self.fig, self.ax = plt.subplots(figsize=(15,15)) # 15 inch by 15 inches
+        (self.plot,) = self.ax.plot(0,0, animated=True, color="red") # Create cached plot function
         # Four parameters: number, x coordinate, y coordinate, is shift pressed
         if ".fits" in path:
             f = fits.open(self.path, ignore_missing_end=True)
@@ -61,12 +62,16 @@ class Coordinates:
         self.cidpress = self.fig.canvas.mpl_connect('key_press_event', self.key_press)
         self.cidrelease = self.fig.canvas.mpl_connect('key_release_event', self.key_release)
         if self.datafile:
+            self.datafile = self.datafile.replace('data/','') # Remove data/ directory from file
             self.plot_data()
         else:
             self.datafile = "coordinates-{}.csv".format(datetime.now().strftime("%Y-%m-%d-%H:%m:%S"))
         # Our characterfile will just be dependent on the naming of our coordfile, so we don't have to repeat logic. 
         self.characterfile="characteristics-{}.csv".format(self.datafile[self.datafile.find('-')+1:self.datafile.find('.')])
         print(self.characterfile)
+        plt.pause(0.1) # Wait for canvas to catch up
+        self.bg = self.fig.canvas.copy_from_bbox(self.fig.bbox) # Get a copy of the entire figure, easy to redraw
+        self.fig.canvas.blit(self.fig.bbox) # Update results on screen
         plt.show()
 
     ## Operation: whenever shift is held (either), and a click is detected, a point
@@ -76,6 +81,7 @@ class Coordinates:
         # Function will process all clicks on the figure canvas
         self.ix, self.iy = event.xdata, event.ydata
         if self.shift:
+            self.fig.canvas.restore_region(self.bg) # Restore all unmodified data
             # If the size of the array is zero, initialize it. Otherwise, just append to it.
             if np.size(self.coords[self.num]) == 0:
                 self.coords[self.num] = np.array([[self.ix,self.iy]])
@@ -84,9 +90,16 @@ class Coordinates:
             # We store coordinates in a numpy array. 
             x = self.coords[self.num][:,0]
             y = self.coords[self.num][:,1]
-            self.ax.scatter(x,y)
-            self.ax.plot(x,y)
-            self.fig.canvas.draw()
+            #self.scat.set_data(x,y)
+            self.scat = self.ax.scatter(x,y, animated=True) # Create scatter function
+            self.plot.set_data(x,y)
+
+            self.ax.draw_artist(self.scat) # Draw the updated scatter plot
+            self.ax.draw_artist(self.plot) # Draw the updated line plot
+
+            self.fig.canvas.blit(self.fig.bbox)
+            self.fig.canvas.flush_events()
+            self.bg = self.fig.canvas.copy_from_bbox(self.fig.bbox)
 
     # Note: keys must be pressed one at a time. 
     def key_press(self,event):
@@ -122,6 +135,8 @@ class Coordinates:
                     length = 0
                     self.prevcoord=np.array([])
                     for coord in self.coords[key]:
+                        if coord.any() == None:
+                            pass
                         if self.prevcoord.size == 0:
                             self.prevcoord = coord
                         else:
@@ -136,7 +151,7 @@ class Coordinates:
     
     def plot_data(self):
         # If we already have data stored in a CSV, we can supply it as an optional argument to be plotted.
-        with open(self.datafile, newline='') as datafile:
+        with open("data/"+self.datafile, newline='') as datafile:
             datareader = csv.reader(datafile, delimiter=',')
             for row in datareader:
                 try:
