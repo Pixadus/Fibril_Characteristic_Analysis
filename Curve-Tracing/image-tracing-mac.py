@@ -35,7 +35,6 @@ class Coordinates:
         self.coords[0] = np.array([]) # Initialize the 0th curve array
         self.shift = False          # Is the shift key currently pressed?
         self.fig, self.ax = plt.subplots(figsize=(15,15)) # 15 inch by 15 inches
-        (self.plot,) = self.ax.plot(0,0, animated=True, color="red") # Create cached plot function
         # Four parameters: number, x coordinate, y coordinate, is shift pressed
         if ".fits" in path:
             f = fits.open(self.path, ignore_missing_end=True)
@@ -92,7 +91,7 @@ class Coordinates:
             y = self.coords[self.num][:,1]
             #self.scat.set_data(x,y)
             self.scat = self.ax.scatter(x,y, animated=True) # Create scatter function
-            self.plot.set_data(x,y)
+            (self.plot,) = self.ax.plot(x,y, animated=True, color="red") # Create cached plot function
 
             self.ax.draw_artist(self.scat) # Draw the updated scatter plot
             self.ax.draw_artist(self.plot) # Draw the updated line plot
