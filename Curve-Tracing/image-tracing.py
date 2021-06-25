@@ -131,7 +131,7 @@ class Coordinates:
                     length = 0
                     self.prevcoord=np.array([])
                     for coord in self.coords[key]:
-                        if coord.any() == None:
+                        if coord.any() == False:
                             pass
                         if self.prevcoord.size == 0:
                             self.prevcoord = coord
@@ -150,6 +150,8 @@ class Coordinates:
         with open("data/"+self.datafile, newline='') as datafile:
             datareader = csv.reader(datafile, delimiter=',')
             for row in datareader:
+                if row[1] == '' or row[2] == '':
+                    continue
                 try:
                     self.coords[int(row[0])]
                 except KeyError:
