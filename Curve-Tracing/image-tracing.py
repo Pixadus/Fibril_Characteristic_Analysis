@@ -58,6 +58,7 @@ class Coordinates:
         self.cidpress = self.fig.canvas.mpl_connect('key_press_event', self.key_press)
         self.cidrelease = self.fig.canvas.mpl_connect('key_release_event', self.key_release)
         if self.datafile:
+            self.datafile = self.datafile.replace('data/','') # Remove data/ directory from file
             self.plot_data()
         else:
             self.datafile = "coordinates-{}.csv".format(datetime.now().strftime("%Y-%m-%d-%H:%m:%S"))
@@ -83,7 +84,8 @@ class Coordinates:
             y = self.coords[self.num][:,1]
             self.ax.scatter(x,y)
             self.ax.plot(x,y)
-            self.fig.canvas.draw()
+            self.fig.canvas.update()
+            self.fig.canvas.flush_events()
 
     # Note: keys must be pressed one at a time. 
     def key_press(self,event):
@@ -119,6 +121,8 @@ class Coordinates:
                     length = 0
                     self.prevcoord=np.array([])
                     for coord in self.coords[key]:
+                        if coord == None:
+                            pass
                         if self.prevcoord.size == 0:
                             self.prevcoord = coord
                         else:
@@ -133,7 +137,7 @@ class Coordinates:
     
     def plot_data(self):
         # If we already have data stored in a CSV, we can supply it as an optional argument to be plotted.
-        with open(self.datafile, newline='') as datafile:
+        with open("data/"+self.datafile, newline='') as datafile:
             datareader = csv.reader(datafile, delimiter=',')
             for row in datareader:
                 try:
