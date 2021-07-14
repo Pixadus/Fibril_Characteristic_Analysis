@@ -3,7 +3,8 @@
 Created on Wed July 07 2021
 
 @author: Parker Lamb
-@description: generates a histogram of OCCULT-2 lengths for different parameters.
+@description: generates a histogram of OCCULT-2 lengths for different parameters. This script is designed to work hand-in-hand
+              with the script 'auto_run.pro'. 
 """
 import matplotlib.pyplot as plt
 from os import listdir
@@ -26,36 +27,43 @@ def Histogram():
     files = listdir("data/IDL/")
 
     # Get the number of columns - i.e. the range of used NSM1 values
-    nsm1 = []
+    para1_start = 8 # NSM1
+    para1_end = 9 # NSM1
+    para1_offset = 3 # NSM1 (What is the starting value?)
+    para1 = []
     for filename in files:
-        slice = filename[8:9]
-        nsm1.append(int(slice))
-    columns = max(nsm1)-min(nsm1)+1
+        slice = filename[para1_start:para1_end]
+        para1.append(int(slice))
+    columns = max(para1)-min(para1)+1
 
     # Get the number of columns - i.e. the range of used NGAP values
-    ngap = []
+    para2_start = 16 # NGAP1
+    para2_end = 17 # NGAP1
+    para2_offset = 1 # NGAP1 (What is the starting value?)
+    para2 = []
     for filename in files:
-        slice = filename[16:17]
-        ngap.append(int(slice))
-    rows = max(ngap)-min(ngap)+1
+        slice = filename[para2_start:para2_end]
+        para2.append(int(slice))
+    rows = max(para2)-min(para2)+1
 
     # Create matplotlib subplots
     fig, axes = plt.subplots(nrows=rows,ncols=columns)
 
-
     # Generate histograms
     for filename in files:
-        row = int(filename[16:17])-1
-        col = int(filename[8:9])-3
+        nsm1 = int(filename[8:9])
+        ngap = int(filename[16:17])
         t1 = float(filename[19:23])
         t2 = int(filename[22:23])
+        col = int(filename[para1_start:para1_start])-para1_offset
+        row = int(filename[para2_start:para2_end])-para2_offset
         print(filename, col, row)
         lengths = ReadDat(filename)
         axes[row][col].hist(lengths, bins=53)
         axes[row][col].set_xlim(left=0,right=220)
         axes[row][col].set_xlabel("Length")
         axes[row][col].set_xlabel("Number")
-        axes[row][col].set_title("Histogram of Lengths, N%d, G%d, T1%.2f, T2%s, A%.2f, Z%d" % (col+3, row+1, t1, t2, np.average(lengths), lengths.size))
+        axes[row][col].set_title("Histogram of Lengths, N%d, G%d, T1%.2f, T2%s, A%.2f, Z%d" % (nsm1, ngap, t1, t2, np.average(lengths), lengths.size))
     fig.tight_layout()
     plt.show()
 
