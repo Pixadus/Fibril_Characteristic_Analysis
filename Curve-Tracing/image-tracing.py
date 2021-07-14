@@ -58,16 +58,12 @@ class Coordinates:
         self.cidpress = self.fig.canvas.mpl_connect('key_press_event', self.key_press)
         self.cidrelease = self.fig.canvas.mpl_connect('key_release_event', self.key_release)
         if self.datafile:
-            self.datafile = self.datafile.replace('data/','') # Remove data/ directory from file
             self.plot_data()
         else:
             self.datafile = "coordinates-{}.csv".format(datetime.now().strftime("%Y-%m-%d-%H:%m:%S"))
         # Our characterfile will just be dependent on the naming of our coordfile, so we don't have to repeat logic. 
         self.characterfile="characteristics-{}.csv".format(self.datafile[self.datafile.find('-')+1:self.datafile.find('.')])
         print(self.characterfile)
-        plt.pause(0.1) # Wait for canvas to catch up
-        self.bg = self.fig.canvas.copy_from_bbox(self.fig.bbox) # Get a copy of the entire figure, easy to redraw
-        self.fig.canvas.blit(self.fig.bbox) # Update results on screen
         plt.show()
 
     ## Operation: whenever shift is held (either), and a click is detected, a point
@@ -77,7 +73,6 @@ class Coordinates:
         # Function will process all clicks on the figure canvas
         self.ix, self.iy = event.xdata, event.ydata
         if self.shift:
-            self.fig.canvas.restore_region(self.bg) # Restore all unmodified data
             # If the size of the array is zero, initialize it. Otherwise, just append to it.
             if np.size(self.coords[self.num]) == 0:
                 self.coords[self.num] = np.array([[self.ix,self.iy]])
@@ -86,16 +81,9 @@ class Coordinates:
             # We store coordinates in a numpy array. 
             x = self.coords[self.num][:,0]
             y = self.coords[self.num][:,1]
-            #self.scat.set_data(x,y)
-            self.scat = self.ax.scatter(x,y, animated=True) # Create scatter function
-            (self.plot,) = self.ax.plot(x,y, animated=True) # Create cached plot function
-
-            self.ax.draw_artist(self.scat) # Draw the updated scatter plot
-            self.ax.draw_artist(self.plot) # Draw the updated line plot
-
-            self.fig.canvas.blit(self.fig.bbox)
-            self.fig.canvas.flush_events()
-            self.bg = self.fig.canvas.copy_from_bbox(self.fig.bbox)
+            self.ax.scatter(x,y)
+            self.ax.plot(x,y)
+            self.fig.canvas.draw()
 
     # Note: keys must be pressed one at a time. 
     def key_press(self,event):
@@ -131,8 +119,6 @@ class Coordinates:
                     length = 0
                     self.prevcoord=np.array([])
                     for coord in self.coords[key]:
-                        if coord.any() == False:
-                            pass
                         if self.prevcoord.size == 0:
                             self.prevcoord = coord
                         else:
@@ -147,11 +133,9 @@ class Coordinates:
     
     def plot_data(self):
         # If we already have data stored in a CSV, we can supply it as an optional argument to be plotted.
-        with open("data/"+self.datafile, newline='') as datafile:
+        with open(self.datafile, newline='') as datafile:
             datareader = csv.reader(datafile, delimiter=',')
             for row in datareader:
-                if row[1] == '' or row[2] == '':
-                    continue
                 try:
                     self.coords[int(row[0])]
                 except KeyError:
