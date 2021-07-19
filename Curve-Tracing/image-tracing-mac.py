@@ -39,7 +39,8 @@ class Coordinates:
         if ".fits" in path:
             f = fits.open(self.path, ignore_missing_end=True)
             ext = [x_off, f[0].data.shape[0]+x_off, y_off, f[0].data.shape[1]+y_off]
-            self.ax.imshow(f[0].data, cmap="ocean", origin="lower", vmin="0", vmax="700", extent=ext)
+            f = np.flipud(f) # IDL arrays appear vertically "flipped" to Python. We reset it here. 
+            self.ax.imshow(f[0].data, cmap="ocean", vmin="0", vmax="700", extent=ext)
         elif ".sav" in path:
             f = sio.readsav(self.path)
             if len(f) > 1:
@@ -49,11 +50,15 @@ class Coordinates:
                     print("{}: {}".format(n,im_name))
                     n+=1
                 opt = input("> ")
-                ext = [x_off, f[list(f.keys())[int(opt)]].shape[0]+x_off, y_off, f[list(f.keys())[int(opt)]].shape[1]+y_off]
-                self.ax.imshow(f[list(f.keys())[int(opt)]], cmap="ocean", origin="lower", vmin="0.99", vmax="1.25", extent=ext)
+                f = f[list(f.keys())[int(opt)]]
+                f = np.flipud(f) # IDL arrays appear vertically "flipped" to Python. We reset it here. 
+                ext = [x_off, f.shape[0]+x_off, y_off, f.shape[1]+y_off]
+                self.ax.imshow(f, cmap="ocean", vmin="0.99", vmax="1.25", extent=ext)
             else:
-                ext = [x_off, f[list(f.keys())[0]].shape[0]+x_off, y_off, f[list(f.keys())[0]].shape[1]+y_off]
-                self.ax.imshow(f[list(f.keys())[0]], cmap="ocean", origin="lower", vmin="0.99", vmax="1.25", extent=ext)
+                f = f[list(f.keys())[0]]
+                f = np.flipud(f) # IDL arrays appear vertically "flipped" to Python. We reset it here. 
+                ext = [x_off, f.shape[0]+x_off, y_off, f.shape[1]+y_off]
+                self.ax.imshow(f, cmap="ocean", vmin="0.99", vmax="1.25", extent=ext)
                 # NOTE: the vmin and vmax values above should be modified to provide max contrast to image. Open plot options in image to find this. 
         # Color maps available at https://matplotlib.org/stable/tutorials/colors/colormaps.html
         # Events, such as mouse click, and button press/release.
