@@ -106,11 +106,6 @@ for key in data_dict.keys():
 # -- d. Width extension if:
 # ---- 1. Located perpendicular to line pixel's slope
 # ---- 2. Intensity > get_intensity_limit
-# ---- 3. Pixel not located further than max_width*0.5
-# 
-# NOTE: for now, we're assuming max intensity is the center of the fibril, and just doubling the measured width above. 
-#       Problems exist with this method - may be unequal observed widths but equal physical widths, or equal observed
-#       widths and unequal physical widths.
 
 # Get the image average difference between maxima and minima
 intensity_limit_frac = get_intensity_limit(picture_path)
@@ -206,6 +201,7 @@ for key in data_dict.keys():
 
         coord_set["width"] = width
 
+# Calculate global averages here
 total_widths = []
 total_lengths = []
 total_intensities = []

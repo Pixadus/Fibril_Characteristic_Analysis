@@ -1,3 +1,12 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri July 23 2021
+
+@author: Parker Lamb
+@description: Analyzes image intensities by creating x-and-y slices across the entire image,
+              looking for maxima and minima. Returns a percentage, which is the average percentage
+              minima are of maxima.
+"""
 import matplotlib.pyplot as plt
 import sys
 from astropy.io import fits
