@@ -8,12 +8,14 @@ Created on Thur July 15 2021
 """
 import sys
 import re
-from astropy.io import fits
-import scipy.io as sio
-from scipy.signal import argrelextrema
+import csv
 import numpy as np
-from intensity_limits import get_intensity_limit
+import scipy.io as sio
 import matplotlib.pyplot as plt
+from astropy.io import fits
+from collections import OrderedDict
+from scipy.signal import argrelextrema
+from intensity_limits import get_intensity_limit
 
 # 0. Specify OCCULT-2 data file and original picture file
 
@@ -217,7 +219,21 @@ for key in data_dict.keys():
     total_lengths.append(length)
     total_intensities.append(np.mean(intensities))
 
-
 print("Average width: {} pixels".format(np.mean(total_widths)))
 print("Average length: {} pixels".format(np.mean(total_lengths)))
 print("Average loop intensity: {}".format(np.mean(total_intensities)))
+
+# 5. Export to CSV (results/results.csv)
+file_path = 'results/mapping_results.csv'
+
+# Python dictionaries are unordered by default; sort it here.
+ordered_data = OrderedDict(sorted(data_dict.items()))
+
+with open(file_path, 'w', newline='') as csvfile:
+    writer = csv.writer(csvfile)
+    writer.writerow(['Loop', 'x', 'y', 'Length', 'Intensity', 'Width'])
+    for loop in ordered_data.keys():
+        for coord_set in data_dict[loop]:
+            writer.writerow([loop, coord_set['x'], coord_set['y'], coord_set['length'], coord_set['intensity'], coord_set['width']])
+
+print("Results written to {}".format(file_path))
