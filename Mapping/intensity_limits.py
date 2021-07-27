@@ -13,6 +13,7 @@ from astropy.io import fits
 import scipy.io as sio
 from scipy.signal import argrelextrema
 import numpy as np
+import matplotlib.pyplot as plt
 
 def get_intensity_limit(picture_path):
     """
@@ -93,6 +94,7 @@ def get_intensity_limit(picture_path):
     
     return(np.mean(image_differences))
 
+
 if __name__ == "__main__":
     picture_path = sys.argv[1]
-    get_intensity_limit(picture_path)
+    print(get_intensity_limit(picture_path))
