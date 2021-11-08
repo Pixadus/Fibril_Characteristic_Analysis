@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon July 26 2021
+MARKED FOR REDO
 
 @author: Parker Lamb
 @description: Looks at results from ../Mapping/; generates comparison plots, to
