@@ -1,13 +1,15 @@
 plot_fibrils  = 0
 label_fibrils = 0
 
-; restore,/ve,'Halpha.6563.line.params.mfbd_300modes.ser171853.seq00.hmi_aligned.sav'
-;coreint_map = halpha_coreint_mfbd_m300
-;width_map   = halpha_width_mfbd_m300
-;vel_map     = halpha_vel_mfbd_m300
+; Change working directory to optimization/ folder first
+
+ restore,/ve,'data/images/sav/Halpha.6563.line.params.mfbd_300modes.ser171853.seq00.hmi_aligned.sav'
+coreint_map = halpha_coreint_mfbd_m300
+width_map   = halpha_width_mfbd_m300
+vel_map     = halpha_vel_mfbd_m300
 
 ; this is the output table from OCCULT
-fibrils = read_csv('Halpha-N3R45L45G3.dat')
+fibrils = read_csv('data/occult_results/Halpha.dat')
 ; the total number of pixel coordinates for all identified fibrils
 numpts  = N_ELEMENTS(fibrils.field1)
 ; these are fibrils that are close to edge of field of view, mostly edge artifacts
@@ -66,12 +68,12 @@ fib_oclt_vel     = interpolate(vel_map,     fibrils_oclt[*,1], fibrils_oclt[*,2]
 ;     into a single superset (adding an offset to the fibril id numbers to make sure each fibril dataset
 ;     covers a different interval)
 ; .r interpolate_fibril_coordinates.pro
-; fib_combo_1pix_gianna = interpolate_fibril_coordinates('coordinates.gc.20210625.csv',                 colors=['Red6', 'Red3'])
-; fib_combo_1pix_benoit = interpolate_fibril_coordinates('coordinates-benoit-2021-06-25.csv' ,          colors=['Blu5', 'Blu3'])
-; fib_combo_1pix_parker = interpolate_fibril_coordinates('coordinates-parker-2021-06-25-11_06_30.csv' , colors=['Grn4', 'Grn3'])
-; fib_combo_1pix_parker[*,0] += 1000
-; fib_combo_1pix_benoit[*,0] += 2000
-; fib_combo_1pix_manual = [fib_combo_1pix_gianna,fib_combo_1pix_parker,fib_combo_1pix_benoit]
+ fib_combo_1pix_gianna = interpolate_fibril_coordinates('coordinates.gc.20210625.csv',                 colors=['Red6', 'Red3'])
+ fib_combo_1pix_benoit = interpolate_fibril_coordinates('coordinates-benoit-2021-06-25.csv' ,          colors=['Blu5', 'Blu3'])
+ fib_combo_1pix_parker = interpolate_fibril_coordinates('coordinates-parker-2021-06-25-11_06_30.csv' , colors=['Grn4', 'Grn3'])
+ fib_combo_1pix_parker[*,0] += 1000
+ fib_combo_1pix_benoit[*,0] += 2000
+ fib_combo_1pix_manual = [fib_combo_1pix_gianna,fib_combo_1pix_parker,fib_combo_1pix_benoit]
 
 fibril_reference = fib_combo_1pix_manual
 fibril_reference_num = N_ELEMENTS(fibril_reference[*,0])
