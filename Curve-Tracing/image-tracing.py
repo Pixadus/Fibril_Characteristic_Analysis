@@ -50,7 +50,7 @@ class Coordinates:
                 self.ax.imshow(f[list(f.keys())[int(opt)]], cmap="ocean", origin="lower", vmin="0.99", vmax="1.25", extent=ext)
             else:
                 ext = [x_off, f[list(f.keys())[0]].shape[0]+x_off, y_off, f[list(f.keys())[0]].shape[1]+y_off]
-                self.ax.imshow(f[list(f.keys())[0]], cmap="ocean", origin="lower", vmin="0.99", vmax="1.25", extent=ext)
+                self.ax.imshow(f[list(f.keys())[0]], cmap="gray", origin="lower", extent=ext)
                 # NOTE: the vmin and vmax values above should be modified to provide max contrast to image. Open plot options in image to find this. 
         # Color maps available at https://matplotlib.org/stable/tutorials/colors/colormaps.html
         # Events, such as mouse click, and button press/release.
