@@ -70,9 +70,9 @@ for fib_id_cnt = 0,fibrils_manual_num-1 do begin
         if plot_fibrils then plots, fib_xc_orig, fib_yc_orig, col=colfib,/dev,psym=-1,th=2
         if label_fibrils then xyouts, fib_xc_orig[0], fib_yc_orig[0],strtrim(fib_id,2),col= coltxt,charsi=1.2,charth=0.8,/dev,align=0.5
     
-        ; determine the offset in the x and y directions between each clicked point in the fibril trace
-        fib_xc_step = first_der(fib_xc_orig)
-        fib_yc_step = first_der(fib_yc_orig)
+        ; determine the pixel offset in the x and y directions between each clicked point in the fibril trace
+        fib_xc_step = fib_xc_orig[1:-1] - fib_xc_orig[0:-2]
+        fib_yc_step = fib_yc_orig[1:-1] - fib_yc_orig[0:-2]
 
         ; compute the total length between each clicked point in the fibril trace
         fib_segment_lengths = round(sqrt(fib_xc_step^2 + fib_yc_step^2))
