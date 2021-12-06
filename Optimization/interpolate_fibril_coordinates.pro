@@ -33,7 +33,7 @@ label_fibrils = 1
 plot_fitted   = 1
 
 if N_ELEMENTS(halpha_coreint_mfbd_m300) LE 1 then $
-    restore,/ve,'Halpha.6563.line.params.mfbd_300modes.ser171853.seq00.hmi_aligned.sav'
+    restore,/ve,'data/images/sav/Halpha.6563.line.params.mfbd_300modes.ser171853.seq00.hmi_aligned.sav'
 coreint_map = halpha_coreint_mfbd_m300
 width_map   = halpha_width_mfbd_m300
 vel_map     = halpha_vel_mfbd_m300
