@@ -19,7 +19,7 @@
 ;     current display, as well as label each fibril trace with it's ID number
 ;
 
-FUNCTION interpolate_fibril_coordinates, fibril_coords_file, colors=colors
+FUNCTION interpolate_fibril_coordinates, fibril_coords_file, colors=colors, imgvec=imgvec
 
 IF N_ELEMENTS(colors) NE 2 THEN BEGIN
     colfib = cgColor('Red6')

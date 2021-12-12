@@ -39,6 +39,7 @@ fibrils_tested_num      = N_ELEMENTS(fibrils_tested_uniq)
 fibrils_reference_num   = N_ELEMENTS(fibrils_reference[*,0])
 fibrils_ref_uniq_idx    = UNIQ(fibrils_reference[*,0], SORT(fibrils_reference[*,0]))
 fibrils_reference_uniq  = (fibrils_reference[*,0])[fibrils_ref_uniq_idx]
+fibrils_ref_uni_num     = N_ELEMENTS(fibrils_reference_uniq)
 
 ; we will first loop through each fibril coordinate, ignoring which "fibril" they belong to.
 fibrils_tested_match = fltarr(fibrils_numpts, 8)
@@ -134,7 +135,7 @@ for fib_id_idx = 0, fibrils_tested_num-1 do begin
     match_id_num[fib_id_idx] = N_ELEMENTS(fib_test_info_id_uniq)
 
     candidate_match_info     = FLTARR(match_id_num[fib_id_idx],9)
-
+    
     ; now loop through each candidate fibril
     for candidate_idx = 0,match_id_num[fib_id_idx]-1 do begin
         ; extract information (coordinates, number of coordinate points, fibril length) on
@@ -181,8 +182,7 @@ for fib_id_idx = 0, fibrils_tested_num-1 do begin
     ; select reference fibril that has smallest mean distance to test fibril
     best_fibril_dist = MIN(candidate_match_info[*,6], best_fibril_pos)
     candidate_match_best[fib_id_idx,*] = candidate_match_info[best_fibril_pos, *]
-    
-
+        
     if first_fibril EQ 1 then begin
       fib_params_all  = fib_info_combo
       first_fibril       = 0

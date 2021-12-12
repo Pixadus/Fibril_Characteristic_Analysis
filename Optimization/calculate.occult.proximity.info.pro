@@ -17,7 +17,7 @@ bad_fibrils = [0,1,2,5,7,8,10,12, 78,43,50, 49, 89, 246, 127, 226, 455, 289]
 fibrils_oclt = FLTARR(numpts,6)
 for nn=0,numpts-1 do begin & $
     fibrils_oclt[nn,0:4] = float(strsplit(fibrils.field1[nn],/extract)) & $
-    IF (max(bad_fibrils EQ fibrils_oclt[nn,0]) ne 1) then fibrils_oclt[nn,5] = 1 & $
+    IF (max(bad_fibrils EQ fibrils_oclt[nn,0]) ne 1) then fibrils_oclt[nn,5] = 1 & $ ; the 5th column is used to flag bad fibrils 
 endfor
 
 ; find numbers of individual fibrils in the OCCULT file
@@ -44,9 +44,9 @@ for fib_id = 0, fibrils_oclt_num-1 do begin
     ; plot all fibrils
     If fibrils_oclt_valid[fib_id] EQ 1 then begin
         if plot_fibrils then plots, fibrils_oclt[fib_oclt_matchidx,1], fibrils_oclt[fib_oclt_matchidx,2], $
-            col=cgColor('YGB6'),/dev,psym=-3,th=2
+            col=cgColor('YGB6'),/dev,psym=-3,th=2 ; YGB6 = blue-blue-green
         if label_fibrils then xyouts, fibrils_oclt[fib_oclt_matchidx[0],1], fibrils_oclt[fib_oclt_matchidx[0],2]-1,$
-            strtrim(fib_id,2),col=cgColor('YGB4'),charsi=2,charth=1,/dev,align=0.5
+            strtrim(fib_id,2),col=cgColor('YGB4'),charsi=2,charth=1,/dev,align=0.5 ; YGB4 = blue-green
     endif
 endfor
 
@@ -73,7 +73,7 @@ fib_oclt_vel     = interpolate(vel_map,     fibrils_oclt[*,1], fibrils_oclt[*,2]
  fib_combo_1pix_parker[*,0] += 1000
  fib_combo_1pix_benoit[*,0] += 2000
  fib_combo_1pix_manual = [fib_combo_1pix_gianna,fib_combo_1pix_parker,fib_combo_1pix_benoit]
-
+ 
 fibril_reference = fib_combo_1pix_manual
 fibril_reference_num = N_ELEMENTS(fibril_reference[*,0])
 
@@ -88,9 +88,12 @@ for fib_oclt_idx=0LL, numpts-1 do begin
     ; store the OCCULT pixel coordinate and closest reference fibril pixel
     fibrils_occult_match[fib_oclt_idx,*] = [fiboclt[0:2],reform(fibril_reference[mindist_idx,0:3]),mindist]
 endfor                                   
+print,N_ELEMENTS(fibrils_occult_match)
 
 ; find all pixel positions where the distance between OCCULT and reference fibrils is less than 10 pixels
 mindist_match = WHERE(fibrils_occult_match[*,7] LE 10) 
+
+print,N_ELEMENTS(mindist_match)
 
 match_dist_ave  = FLTARR(fibrils_oclt_num)
 match_dist_min  = FLTARR(fibrils_oclt_num)
@@ -132,7 +135,7 @@ for fib_id = 0, fibrils_oclt_num-1 do begin
         match_id_rms[fib_id]    = STDDEV(fib_oclt_info_id)
         ; determine the number of different reference fibrils that are "closest" to the selected OCCULT fibril
         fib_oclt_info_id_uniq   = fib_oclt_info_id[UNIQ(fib_oclt_info_id,SORT(fib_oclt_info_id))]
-        match_id_num[fib_id]    = N_ELEMENTS(fib_oclt_info_id_uniq)
+        match_id_num[fib_id]    = N_ELEMENTS(fib_oclt_info_id_uniq) ; number of IDs that "match" a given fibril
     
         ; calculate mean information on map parameters for each OCCULT fibril 
         ;    -- this actually doesn't have anything to do with the fibril matching process
