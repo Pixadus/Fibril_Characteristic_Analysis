@@ -46,9 +46,9 @@ rmin_range    = [35:55:5]       ; 5
 lmin_range    = [35:45:10]      ; 2
 nstruc        = 2000            ; 1
 nloopmax      = 2000            ; 1
-ngap_range    = [3]             ; 1
-thresh1_range = [0.0:1.0:0.5]   ; 3
-thresh2_range = [3:5]           ; 3
+ngap_range    = [1:3]           ; 3 
+thresh1_range = [0.0]           ; 1
+thresh2_range = [3]             ; 1
 
 for nsm1=0, N_ELEMENTS(nsm1_range)-1 do begin
   for rmin=0, N_ELEMENTS(rmin_range)-1 do begin
@@ -71,6 +71,7 @@ for nsm1=0, N_ELEMENTS(nsm1_range)-1 do begin
             ; Run OCCULT-2, get data on fibrils
             print,"Getting OCCULT fibril data"
             occult_results_valid = looptracing_auto4_custom(width_map,output_img,params,output, 2001)
+            write_csv,"data/optimization_results/occult_results_valid.csv",transpose(occult_results_valid)
             
 ;            ; REMOVE Using temporary test data for now
 ;            occult_fibrils_raw = read_csv('data/occult_results/Halpha-N3R45L45G3.dat')
@@ -90,14 +91,14 @@ for nsm1=0, N_ELEMENTS(nsm1_range)-1 do begin
 ;            write_csv,"data/occult_results.csv",transpose(occult_results)
 ;            write_csv,"data/occult_old_results.csv",transpose(occult_fibrils_valid)
               
-            ; Run calculate_fibril_proximity on occult fibrils
+            ; Run calculate_fibridl_proximity on occult fibrils
             print,"Calculating proximity of occult fibrils"
-            occult_fibril_match_info = calculate_fibril_proximity(manual_combined,occult_fibrils_valid,plot=0,label=0)
+            occult_fibril_match_info = calculate_fibril_proximity(manual_combined,occult_results_valid,plot=0,label=0)
             occult_best_matches = occult_fibril_match_info.BEST_MATCH
   
             ; Run calculate_fibril_proximity on manual fibrils
             print,"Calculating proximity of manual fibrils"
-            manual_fibril_match_info = calculate_fibril_proximity(occult_fibrils_valid,manual_combined,plot=0,label=0)
+            manual_fibril_match_info = calculate_fibril_proximity(occult_results_valid,manual_combined,plot=0,label=0)
             manual_best_matches = manual_fibril_match_info.BEST_MATCH
   
             ; Find number of OCCULT fibrils with minimum distance from nearest manual neighbor > 10 px. These are considered "invalid" fibrils.

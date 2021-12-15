@@ -53,9 +53,9 @@
 ; Contact     : aschwanden@sag.lmsal.com
 ;-
 
-function looptracing_auto4_custom,image1,image2,params,output,test
+function looptracing_auto4_custom,image1,image2,para2,output,test
 
-para2 = params
+fibList = List()
 
 ;UNPACK CONTROL PARAMETERS__________________________________________
 	;para2=[nsm1,rmin,lmin,nstruc,nloopw,ngap,qthresh1,qthresh2]
@@ -240,7 +240,6 @@ for istruc=0,nstruc-1 do begin
 SKIP_STRUCT:
 ;STORE LOOP COORDINATES_______________________________________________
  if (looplen ge lmin) then begin
-  fibList = List()
   nn	=long(ns/reso+0.5)
   ii	=findgen(nn)*reso
   xx	=interpol(xloop,s,ii)				;interpolate
@@ -255,7 +254,7 @@ SKIP_STRUCT:
   iloop_nstruc(istruc)=iloop
   loop_len(iloop)=looplen
   iloop=iloop+1
- endif				 
+ endif
 
 ;TEST DISPLAY_________________________________________________________
 if (test eq 2) and (looplen ge lmin) then begin 
@@ -353,6 +352,7 @@ output  =[wid,fluxmin,fluxmax,nsm2,nlen,na,nb]
 ;endif
 ;end
 
+print,"List size: ",fibList.Count()
 fibArr = fibList.ToArray()
 return,fibArr
 
