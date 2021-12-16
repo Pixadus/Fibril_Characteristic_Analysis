@@ -18,10 +18,12 @@
 ; Change directory to script folder
 cd, file_dirname(routine_filepath(/Either))
 
-
 ; Variable defintions
 restore,/ve,'data/images/sav/Halpha.6563.line.params.mfbd_300modes.ser171853.seq00.hmi_aligned.sav'
 width_map   = halpha_width_mfbd_m300
+
+; rotate manual array by 0.42 degrees
+
 ;output_img  = "data/images/sav/Ha-occult-result.sav"
 ; TODO add gaussian smoothed width map?
 gianna_results = 'data/manual_results/coordinates.gc.20210625.csv'
