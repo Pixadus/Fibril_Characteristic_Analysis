@@ -19,16 +19,17 @@
 cd, file_dirname(routine_filepath(/Either))
 
 ; Variable defintions
-restore,/ve,'data/images/sav/Halpha.6563.line.params.mfbd_300modes.ser171853.seq00.hmi_aligned.sav'
-width_map   = halpha_width_mfbd_m300
+;restore,/ve,'data/images/sav/Halpha.6563.line.params.mfbd_300modes.ser171853.seq00.hmi_aligned.sav'
+;width_map   = halpha_width_mfbd_m300
+width_map = READFITS('data/images/fits/Ha_cropped.fits')
 
 ; rotate manual array by 0.42 degrees
 
 ;output_img  = "data/images/sav/Ha-occult-result.sav"
 ; TODO add gaussian smoothed width map?
-gianna_results = 'data/manual_results/coordinates.gc.20210625.csv'
-benoit_results = 'data/manual_results/coordinates-benoit-2021-06-25.csv'
-parker_results = 'data/manual_results/coordinates-parker-2021-06-25-11_06_30.csv'
+gianna_results = 'data/manual_results/coords_gianna.csv'
+benoit_results = 'data/manual_results/coords_benoit.csv'
+parker_results = 'data/manual_results/coords_parker.csv'
 parameters_set = List()
 
 ; Read in manual fibrils
