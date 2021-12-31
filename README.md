@@ -7,9 +7,8 @@ Note, that these scripts generally work hand-in-hand with the OCCULT-2 loop reco
 ## Workflow
 
 1. Manually trace lines or loops in your image (see the curve-tracing/ folder)
-2. Automatically trace lines or loops, using OCCULT-2 (see the blog post linked above)
-3. Optimize OCCULT-2 parameters using optimization/
-4. Map the OCCULT-2 calculated values to the original image (see the mapping/ folder)
-5. Analyze the mapping results to find correlations (see the analysis/ folder)
+2. Use the Optimization/ folder to generate an optimized parameter set for OCCULT-2 (see optimization/ folder)
+3. Determine breath and intensity for each pixel coordinate (see characterization/ folder)
+4. Analyze the mapping results to find correlations (see the analysis/ folder)
 
 Data, images and results are available in the data/ folder. 
