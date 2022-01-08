@@ -12,6 +12,7 @@ breadth and velocity values for each coordinate point on each fibril.
 import argparse
 import sys
 import numpy as np
+import cv2
 from scipy.io import readsav
 from matplotlib import pyplot as plt
 from collections import OrderedDict
@@ -68,6 +69,22 @@ for key in coords.keys():
         coord_info.append([coordpair[0],coordpair[1],intensity,velocity])
     coords[key] = coord_info
 
+# Get width of fibril, try using opencv canny
+width_map_cv2 = width_map*325
+width_map_cv2 = width_map_cv2.astype(np.uint8)
+width_map_cv2_blur = cv2.GaussianBlur(width_map_cv2, (5, 5), 0)
+
+# LSD test - this works really well, alternative to OCCULT-2
+#lsd = cv2.createLineSegmentDetector(0)
+#lines = lsd.detect(width_map_cv2_blur)[0] #Position 0 of the returned tuple are the detected lines
+#drawn_img = lsd.drawSegments(width_map_cv2,lines)
+#plt.imshow(drawn_img, origin="lower")
+#plt.show()
+#cv2.waitKey(0)
+
+#edges = cv2.Canny(width_map_cv2_blur, threshold1=30, threshold2=100)
+#plt.imshow(width_map_cv2_blur, origin="lower")
+#plt.show()
 
 # # Test coordinate alignment
 # fig, ax = plt.subplots(figsize=(15,15)) # 15 inch by 15 inches
