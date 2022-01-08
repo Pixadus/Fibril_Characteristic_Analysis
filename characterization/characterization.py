@@ -59,14 +59,15 @@ with open(args.coordinate_file, newline='') as csvfile:
  
 # Get intensity and velocity on a per-coordinate basis
 for key in coords.keys():
+    coord_info = []
     for coordpair in coords[key]:
         x = int(coordpair[0])
         y = int(coordpair[1])
         intensity = core_map[y,x]
         velocity = vel_map[y,x]
-        coords[key] = np.array([coordpair[0],coordpair[1],intensity,velocity])
-        #np.append(coords[key],np.array([intensity,velocity]))
-print(coords)
+        coord_info.append([coordpair[0],coordpair[1],intensity,velocity])
+    coords[key] = coord_info
+
 
 # # Test coordinate alignment
 # fig, ax = plt.subplots(figsize=(15,15)) # 15 inch by 15 inches
