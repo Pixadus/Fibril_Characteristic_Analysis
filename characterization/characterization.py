@@ -72,7 +72,7 @@ for key in coords.keys():
 # Get width of fibril, try using opencv canny
 width_map_cv2 = width_map*325
 width_map_cv2 = width_map_cv2.astype(np.uint8)
-width_map_cv2_blur = cv2.GaussianBlur(width_map_cv2, (5, 5), 0)
+width_map_cv2_blur = cv2.GaussianBlur(width_map_cv2, (10, 10), cv2.BORDER_DEFAULT)
 
 # LSD test - this works really well, alternative to OCCULT-2
 #lsd = cv2.createLineSegmentDetector(0)
@@ -82,9 +82,9 @@ width_map_cv2_blur = cv2.GaussianBlur(width_map_cv2, (5, 5), 0)
 #plt.show()
 #cv2.waitKey(0)
 
-#edges = cv2.Canny(width_map_cv2_blur, threshold1=30, threshold2=100)
-#plt.imshow(width_map_cv2_blur, origin="lower")
-#plt.show()
+edges = cv2.Canny(width_map_cv2_blur, threshold1=30, threshold2=100)
+plt.imshow(width_map_cv2_blur, origin="lower")
+plt.show()
 
 # # Test coordinate alignment
 # fig, ax = plt.subplots(figsize=(15,15)) # 15 inch by 15 inches
