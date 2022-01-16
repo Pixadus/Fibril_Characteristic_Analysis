@@ -59,81 +59,23 @@ with open(args.coordinate_file, newline='') as csvfile:
 
  
 # Get intensity and velocity on a per-coordinate basis
-for key in coords.keys():
-    coord_info = []
-    for coordpair in coords[key]:
-        x = int(coordpair[0])
-        y = int(coordpair[1])
-        intensity = core_map[y,x]
-        velocity = vel_map[y,x]
-        coord_info.append([coordpair[0],coordpair[1],intensity,velocity])
-    coords[key] = coord_info
+# for key in coords.keys():
+#     coord_info = []
+#     for coordpair in coords[key]:
+#         x = int(coordpair[0])
+#         y = int(coordpair[1])
+#         intensity = core_map[y,x]
+#         velocity = vel_map[y,x]
+#         coord_info.append([coordpair[0],coordpair[1],intensity,velocity])
+#     coords[key] = coord_info
 
-# Getting the breadth of each fibril. Experimental, technique ideas described below. 
-
-## Idea 1. cv2.canny on entire image. 
-# width_map_cv2 = width_map*325
-# width_map_cv2 = width_map_cv2.astype(np.uint8)
-# width_map_cv2_blur = cv2.GaussianBlur(width_map_cv2, (5, 5), 20)
-# edges = cv2.Canny(width_map_cv2_blur, threshold1=30, threshold2=100)
-# overlay = cv2.addWeighted(width_map_cv2_blur, 0.7, edges, 0.8,0)
-# plt.imshow(overlay, origin='lower')
-# plt.show()
-# This works on thicker fibrils, but not on thinner (thinner are seen as edges inandof themselves)
-
-## Idea 2. split image into quadrants - run cv2.canny on each quadrant, combine results (with offset)
-# Get dimensions of width_map
-# wm_height = len(width_map)
-# wm_width = len(width_map[1])
-
-# width_map_cv2 = width_map*325
-# width_map_cv2 = width_map_cv2.astype(np.uint8)
-# width_map_cv2_blur = cv2.GaussianBlur(width_map_cv2, (5, 5), cv2.BORDER_DEFAULT)
-
-# wmcb = width_map_cv2_blur
-
-# # Split into 4 quadrants
-# top_left =  [wmcb[i][:wm_width // 2] for i in range(wm_height // 2)]
-# top_right = [wmcb[i][wm_width // 2:] for i in range(wm_height// 2)]
-# bot_left =  [wmcb[i][:wm_width // 2] for i in range(wm_height // 2, wm_height)]
-# bot_right = [wmcb[i][wm_width // 2:] for i in range(wm_height // 2, wm_height)]
-
-# edges_tl = cv2.Canny(np.array(top_left), threshold1=10, threshold2=100)
-# overlay = cv2.addWeighted(np.array(top_left), 0.7, edges_tl, 0.8,0)
-# plt.imshow(overlay)
-# plt.show()
-# No change over previous. 
-
-## Idea 3. increase contrast of image, split into quadrants, canny each quadrant
-# # see https://stackoverflow.com/questions/48406578/adjusting-contrast-of-image-purely-with-numpy
-# wm_height = len(width_map)
-# wm_width = len(width_map[1])
-
-# width_map_cv2 = width_map*325
-# width_map_cv2 = width_map_cv2.astype(np.uint8)
-# width_map_cv2_blur = cv2.GaussianBlur(width_map_cv2, (5, 5), cv2.BORDER_DEFAULT)
-
-# # Get brightness range - i.e. darkest and lightest pixels
-# min=np.min(width_map_cv2_blur) 
-# max=np.max(width_map_cv2_blur) 
-
-# # Make a LUT (Look-Up Table) to translate image values
-# LUT=np.zeros(256,dtype=np.uint8)
-# LUT[min:max+1]=np.linspace(start=0,stop=255,num=(max-min)+1,endpoint=True,dtype=np.uint8)
-
-# # Apply LUT
-# img_contrast = LUT[width_map_cv2_blur]
-# edges_tl = cv2.Canny(np.array(img_contrast), threshold1=10, threshold2=100)
-# overlay = cv2.addWeighted(img_contrast, 0.7, edges_tl, 0.8,0)
-# plt.imshow(overlay, origin='lower')
-# plt.show()
-
-## Idea 4. cv2.canny on sharpened image
-# plt.figure()
-# fig, ax = plt.subplots(1,3)
+# Getting the breadth of each fibril. 
+## This technique will sharpen the image, slightly smooth out noise, then run cv2.Canny
+## on the result to identify edges.
 
 def unsharp_mask(image, kernel_size=(5, 5), sigma=1.0, amount=1.0, threshold=0):
     """Return a sharpened version of the image, using an unsharp mask."""
+    # From https://codingdeekshi.com/python-3-opencv-script-to-smoothen-or-sharpen-input-image-using-numpy-library/
     blurred = cv2.GaussianBlur(image, kernel_size, sigma)
     sharpened = float(amount + 1) * image - float(amount) * blurred
     sharpened = np.maximum(sharpened, np.zeros(sharpened.shape))
@@ -151,10 +93,16 @@ width_map_cv2 = width_map_cv2.astype(np.uint8)
 wm_sharp = unsharp_mask(width_map_cv2, amount=10.0)
 wm_sharp_gauss = cv2.GaussianBlur(wm_sharp, (5,5), 8.0)
 
-
 edges = cv2.Canny(wm_sharp_gauss, threshold1=260, threshold2=280, apertureSize=7)
 overlay = cv2.addWeighted(width_map_cv2, 0.7, edges, 0.4,0)
+
+# Test if Canny boundaries match OCCULT-identified fibrils
+fig, ax = plt.subplots()
 plt.imshow(overlay, origin='lower')
+for key in coords.keys():
+     x = coords[key][:,0]
+     y = coords[key][:,1]
+     plt.scatter(x,y, 1.0, '#ff0000')
 plt.show()
 
 # This works really well. More noise than others, but edges clearly defined. 
