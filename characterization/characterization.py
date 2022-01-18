@@ -13,6 +13,7 @@ import argparse
 from contextlib import suppress
 import sys
 import numpy as np
+import csv
 import cv2
 from scipy.__config__ import show
 from scipy.io import readsav
@@ -30,6 +31,7 @@ show_width_calculations = True
 parser = argparse.ArgumentParser(description="Characterize fibrils on a coordinate-by-coordinate basis. ")
 parser.add_argument('coordinate_file', help='OCCULT-2 coordinates file')
 parser.add_argument('sav_file', help='ha sav file')
+parser.add_argument('output_file', help='where to store characteristic info')
 args = parser.parse_args()
 
 # Test validity of command line arguments
@@ -126,6 +128,7 @@ keys = list(coords)
 for key in coords.keys():
     # Get a list of all coordinates in the fibril
     coordinfo = list(coords[key])
+    coordinfo_new = list()
     # Counter to display every nth width segment
     wctr = 0
     for coord in coordinfo:
@@ -177,5 +180,18 @@ for key in coords.keys():
             coord_offset[1] = coord_offset[1]-dp[1]
         if (wctr % 2) == 0 and show_width_calculations:
             plt.plot(ys,xs,markersize=1,linewidth=1, color='#a09516')
+        # Add width to coord characteristics
+        coord = np.append(coord,np.array([bp+bn]))
+        coordinfo_new.append(coord)
+        # TODO compare with previous coordinate width. If significantly larger, (i.e. 4 -> 12), set to previous
+        # coordinate width. 
+    coords[key] = coordinfo_new
 if show_width_calculations:
     plt.show()
+
+# Write to CSV
+with open(args.output_file, "w", newline='') as outfile:
+    writer = csv.writer(outfile)
+    for key in coords.keys():
+        for coord in coords[key]:
+            writer.writerow([key,coord[0],coord[1],coord[2],coord[3],coord[4]])
