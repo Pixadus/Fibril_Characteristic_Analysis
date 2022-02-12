@@ -25,7 +25,7 @@ from os.path import exists
 np.set_printoptions(suppress=True)
 
 # Disable if you don't want to visualize width calculations
-show_width_calculations = True
+show_width_calculations = False
 
 # Parse command line arguments
 parser = argparse.ArgumentParser(description="Characterize fibrils on a coordinate-by-coordinate basis. ")
@@ -75,7 +75,8 @@ for key in coords.keys():
         y = int(coordpair[1])
         intensity = core_map[y,x]
         velocity = vel_map[y,x]
-        coord_info.append([coordpair[0],coordpair[1],intensity,velocity])
+        width = width_map[y,x]
+        coord_info.append([coordpair[0],coordpair[1],intensity,velocity,width])
     coords[key] = np.array(coord_info)
 
 # Getting the breadth of each fibril. 
@@ -182,10 +183,10 @@ for key in coords.keys():
             plt.plot(ys,xs,markersize=1,linewidth=1, color='#a09516')
         # Add width to coord characteristics
         coord = np.append(coord,np.array([bp+bn]))
-        coordinfo_new.append(coord)
+        coordinfo_new.append([coord[0],coord[1],coord[2],coord[3],coord[4],coord[5]])
         # TODO compare with previous coordinate width. If significantly larger, (i.e. 4 -> 12), set to previous
         # coordinate width. 
-    coords[key] = coordinfo_new
+    coords[key] = np.array(coordinfo_new)
 if show_width_calculations:
     plt.show()
 
@@ -194,4 +195,18 @@ with open(args.output_file, "w", newline='') as outfile:
     writer = csv.writer(outfile)
     for key in coords.keys():
         for coord in coords[key]:
-            writer.writerow([key,coord[0],coord[1],coord[2],coord[3],coord[4]])
+            # fibril_id, x, y, intensity, velocity, width (from width_map), calculated breadth
+            writer.writerow([key,coord[0],coord[1],coord[2],coord[3],coord[4],coord[5]])
+
+# Generate comparison plots
+plt.cla()
+plt.clf()
+for key in coords.keys():
+    x = coords[key][:,0]
+    y = coords[key][:,1]
+    int = coords[key][:,2]
+    vel = coords[key][:,3]
+    width = coords[key][:,4]
+    breadth = coords[key][:,5]
+    plt.scatter(breadth,width, color="blue")
+plt.show()
