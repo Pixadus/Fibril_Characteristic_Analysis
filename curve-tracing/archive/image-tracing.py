@@ -22,7 +22,7 @@ from collections import OrderedDict
 
 class Coordinates:
     ## Setup
-    def __init__(self,path, x_off=0, y_off=0, datafile=None, ):
+    def __init__(self,path, x_off=0, y_off=0, datafile=None):
         self.path = path              # Image path
         self.datafile = datafile
         self.x_off = x_off
