@@ -12,3 +12,21 @@ Note, that these scripts generally work hand-in-hand with the OCCULT-2 loop reco
 4. Analyze the mapping results to find correlations (see the analysis/ folder)
 
 Data, images and results are available in the data/ folder. 
+
+## Optimized Parameter Set
+
+In `data/optimization/optimization_results`, there are three files:
+
+1. `occult_results_valid.csv`, which is OCCULT run with the current best parameter set
+2. `optimization_two_five.csv`, which has the top 25% "best" parameters found
+3. `optimization.csv`, which has matching statistics on the range of parameters. See the optimization/ folder for more info on how this is calculated. 
+
+## GUI Design
+
+0. Master `main.py` file, implementing `curses` design with ASCII art on top, selection of options below art
+1. Options are individual paths. 
+    * Option 1 is *Manually trace fibrils*
+    * Option 2 is *Automatically trace fibrils (OCCULT-2)*
+    * Option 3 is *Characterize fibril set*
+    * Option 4 is *Generate histograms*
+    * Option 5 is *Helper functions* (Convert .sav file to necessary format)

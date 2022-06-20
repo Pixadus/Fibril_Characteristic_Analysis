@@ -23,8 +23,6 @@ cd, file_dirname(routine_filepath(/Either))
 ;width_map   = halpha_width_mfbd_m300
 width_map = READFITS('data/images/fits/Ha_cropped.fits')
 
-; rotate manual array by 0.42 degrees
-
 ;output_img  = "data/images/sav/Ha-occult-result.sav"
 ; TODO add gaussian smoothed width map?
 gianna_results = 'data/manual_results/coords_gianna.csv'
